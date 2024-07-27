@@ -61,7 +61,9 @@ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_
 		"call _start_c\n"         /* transfer to c runtime                           */
 		"hlt\n"                   /* ensure it does not return                       */
 	);
-	__builtin_unreachable();
+	/* Removed because it is GCC-specific and unnecessary. */
+	// __builtin_unreachable();
+	return;
 }
 
 #define NOLIBC_ARCH_HAS_MEMMOVE

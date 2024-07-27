@@ -22,7 +22,8 @@ support for other ISAs.
 ## Modifications
 
 - `arch.h` was modified to only use x86-64.
-- `arch-x86_64.h` was modified to use `libsyscall`.
+- `arch-x86_64.h` was modified to use `libsyscall` and remove
+  `__builtin_unreachable`.
 
 ## License
 
