@@ -43,7 +43,7 @@ extern int syscall6(int syscall_num, void *a, void *b, void *c, void *d, void *e
 #define my_syscall3(n, a, b, c)         	syscall3(n, a, b, c)
 #define my_syscall4(n, a, b, c, d)      	syscall4(n, a, b, c, d)
 #define my_syscall5(n, a, b, c, d, e)   	syscall5(n, a, b, c, d, e)
-#define my_syscall6(n, a, b, c, d, e, f)	syscall5(n, a, b, c, d, e, f)
+#define my_syscall6(n, a, b, c, d, e, f)	syscall6(n, a, b, c, d, e, f)
 
 /* startup code */
 /*
