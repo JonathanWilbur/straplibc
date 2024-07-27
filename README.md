@@ -17,15 +17,12 @@ calls.
 ## Limitations
 
 This will only work on x86-64 for now, but I will accept pull requests to add
-support for other ISAs. The `mmap` and `pselect` functions will be
-unsupported for now, because their system calls require six arguments, but
-`libsyscall` only works for system calls that use up to five.
+support for other ISAs.
 
 ## Modifications
 
 - `arch.h` was modified to only use x86-64.
 - `arch-x86_64.h` was modified to use `libsyscall`.
-- `sys.h` was modified to have no `mmap` or `pselect`.
 
 ## License
 

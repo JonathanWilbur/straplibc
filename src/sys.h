@@ -674,6 +674,41 @@ int mknod(const char *path, mode_t mode, dev_t dev)
 	return __sysret(sys_mknod(path, mode, dev));
 }
 
+#ifndef sys_mmap
+static __attribute__((unused))
+void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
+	       off_t offset)
+{
+	int n;
+
+#if defined(__NR_mmap2)
+	n = __NR_mmap2;
+	offset >>= 12;
+#else
+	n = __NR_mmap;
+#endif
+
+	return (void *)my_syscall6(n, addr, length, prot, flags, fd, offset);
+}
+#endif
+
+/* Note that on Linux, MAP_FAILED is -1 so we can use the generic __sysret()
+ * which returns -1 upon error and still satisfy user land that checks for
+ * MAP_FAILED.
+ */
+
+static __attribute__((unused))
+void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
+{
+	void *ret = sys_mmap(addr, length, prot, flags, fd, offset);
+
+	if ((unsigned long)ret >= -4095UL) {
+		SET_ERRNO(-(long)ret);
+		ret = MAP_FAILED;
+	}
+	return ret;
+}
+
 static __attribute__((unused))
 int sys_munmap(void *addr, size_t length)
 {
@@ -917,6 +952,46 @@ int sched_yield(void)
 {
 	return __sysret(sys_sched_yield());
 }
+
+
+/*
+ * int select(int nfds, fd_set *read_fds, fd_set *write_fds,
+ *            fd_set *except_fds, struct timeval *timeout);
+ */
+
+static __attribute__((unused))
+int sys_select(int nfds, fd_set *rfds, fd_set *wfds, fd_set *efds, struct timeval *timeout)
+{
+#if defined(__ARCH_WANT_SYS_OLD_SELECT) && !defined(__NR__newselect)
+	struct sel_arg_struct {
+		unsigned long n;
+		fd_set *r, *w, *e;
+		struct timeval *t;
+	} arg = { .n = nfds, .r = rfds, .w = wfds, .e = efds, .t = timeout };
+	return my_syscall1(__NR_select, &arg);
+#elif defined(__NR__newselect)
+	return my_syscall5(__NR__newselect, nfds, rfds, wfds, efds, timeout);
+#elif defined(__NR_select)
+	return my_syscall5(__NR_select, nfds, rfds, wfds, efds, timeout);
+#elif defined(__NR_pselect6)
+	struct timespec t;
+
+	if (timeout) {
+		t.tv_sec  = timeout->tv_sec;
+		t.tv_nsec = timeout->tv_usec * 1000;
+	}
+	return my_syscall6(__NR_pselect6, nfds, rfds, wfds, efds, timeout ? &t : NULL, NULL);
+#else
+	return __nolibc_enosys(__func__, nfds, rfds, wfds, efds, timeout);
+#endif
+}
+
+static __attribute__((unused))
+int select(int nfds, fd_set *rfds, fd_set *wfds, fd_set *efds, struct timeval *timeout)
+{
+	return __sysret(sys_select(nfds, rfds, wfds, efds, timeout));
+}
+
 
 /*
  * int setpgid(pid_t pid, pid_t pgid);

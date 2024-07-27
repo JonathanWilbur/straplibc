@@ -35,13 +35,15 @@ extern int syscall2(int syscall_num, void *a, void *b);
 extern int syscall3(int syscall_num, void *a, void *b, void *c);
 extern int syscall4(int syscall_num, void *a, void *b, void *c, void *d);
 extern int syscall5(int syscall_num, void *a, void *b, void *c, void *d, void *e);
+extern int syscall6(int syscall_num, void *a, void *b, void *c, void *d, void *e, void *f);
 
-#define my_syscall0(n)                  syscall0(n)
-#define my_syscall1(n, a)               syscall1(n, a)
-#define my_syscall2(n, a, b)            syscall2(n, a, b)
-#define my_syscall3(n, a, b, c)         syscall3(n, a, b, c)
-#define my_syscall4(n, a, b, c, d)      syscall4(n, a, b, c, d)
-#define my_syscall5(n, a, b, c, d, e)   syscall5(n, a, b, c, d, e)
+#define my_syscall0(n)                  	syscall0(n)
+#define my_syscall1(n, a)               	syscall1(n, a)
+#define my_syscall2(n, a, b)            	syscall2(n, a, b)
+#define my_syscall3(n, a, b, c)         	syscall3(n, a, b, c)
+#define my_syscall4(n, a, b, c, d)      	syscall4(n, a, b, c, d)
+#define my_syscall5(n, a, b, c, d, e)   	syscall5(n, a, b, c, d, e)
+#define my_syscall6(n, a, b, c, d, e, f)	syscall5(n, a, b, c, d, e, f)
 
 /* startup code */
 /*
