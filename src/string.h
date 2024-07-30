@@ -27,7 +27,6 @@ int memcmp(const void *s1, const void *s2, size_t n)
 	return c1;
 }
 
-#ifndef NOLIBC_ARCH_HAS_MEMMOVE
 /* might be ignored by the compiler without -ffreestanding, then found as
  * missing.
  */
@@ -51,9 +50,7 @@ void *memmove(void *dst, const void *src, size_t len)
 	}
 	return dst;
 }
-#endif /* #ifndef NOLIBC_ARCH_HAS_MEMMOVE */
 
-#ifndef NOLIBC_ARCH_HAS_MEMCPY
 /* must be exported, as it's used by libgcc on ARM */
 __attribute__((weak,unused,section(".text.nolibc_memcpy")))
 void *memcpy(void *dst, const void *src, size_t len)
@@ -66,9 +63,7 @@ void *memcpy(void *dst, const void *src, size_t len)
 	}
 	return dst;
 }
-#endif /* #ifndef NOLIBC_ARCH_HAS_MEMCPY */
 
-#ifndef NOLIBC_ARCH_HAS_MEMSET
 /* might be ignored by the compiler without -ffreestanding, then found as
  * missing.
  */
@@ -84,7 +79,6 @@ void *memset(void *dst, int b, size_t len)
 	}
 	return dst;
 }
-#endif /* #ifndef NOLIBC_ARCH_HAS_MEMSET */
 
 static __attribute__((unused))
 char *strchr(const char *s, int c)
