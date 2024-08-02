@@ -61,4 +61,6 @@ __asm__ (
 	"  hlt\n"             /* ensure it does not return                       */
 );
 
+extern void _start(long *sp);
+
 #endif /* _NOLIBC_ARCH_X86_64_H */
