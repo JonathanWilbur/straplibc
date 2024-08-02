@@ -52,18 +52,13 @@ extern int syscall6(int syscall_num, void *a, void *b, void *c, void *d, void *e
  * 2) The deepest stack frame should be zero (the %rbp).
  *
  */
-void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
-{
-	__asm__ volatile (
-		"xor  %ebp, %ebp\n"       /* zero the stack frame                            */
-		"mov  %rsp, %rdi\n"       /* save stack pointer to %rdi, as arg1 of _start_c */
-		"and  $-16, %rsp\n"       /* %rsp must be 16-byte aligned before call        */
-		"call _start_c\n"         /* transfer to c runtime                           */
-		"hlt\n"                   /* ensure it does not return                       */
-	);
-	/* Removed because it is GCC-specific and unnecessary. */
-	// __builtin_unreachable();
-	return;
-}
+__asm__ (
+	"_start:"
+	"  xor  %ebp, %ebp\n" /* zero the stack frame                            */
+	"  mov  %rsp, %rdi\n" /* save stack pointer to %rdi, as arg1 of _start_c */
+	"  and  $-16, %rsp\n" /* %rsp must be 16-byte aligned before call        */
+	"  call _start_c\n"   /* transfer to c runtime                           */
+	"  hlt\n"             /* ensure it does not return                       */
+);
 
 #endif /* _NOLIBC_ARCH_X86_64_H */
