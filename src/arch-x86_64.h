@@ -9,6 +9,7 @@
 
 #include "compiler.h"
 #include "crt.h"
+#include "stdint.h"
 
 /* Syscalls for x86_64 :
  *   - registers are 64-bit
@@ -29,13 +30,13 @@
  *
  */
 
-extern int syscall0(int syscall_num);
-extern int syscall1(int syscall_num, void *a);
-extern int syscall2(int syscall_num, void *a, void *b);
-extern int syscall3(int syscall_num, void *a, void *b, void *c);
-extern int syscall4(int syscall_num, void *a, void *b, void *c, void *d);
-extern int syscall5(int syscall_num, void *a, void *b, void *c, void *d, void *e);
-extern int syscall6(int syscall_num, void *a, void *b, void *c, void *d, void *e, void *f);
+extern size_t syscall0(int syscall_num);
+extern size_t syscall1(int syscall_num, void *a);
+extern size_t syscall2(int syscall_num, void *a, void *b);
+extern size_t syscall3(int syscall_num, void *a, void *b, void *c);
+extern size_t syscall4(int syscall_num, void *a, void *b, void *c, void *d);
+extern size_t syscall5(int syscall_num, void *a, void *b, void *c, void *d, void *e);
+extern size_t syscall6(int syscall_num, void *a, void *b, void *c, void *d, void *e, void *f);
 
 #define my_syscall0(n)                  	syscall0(n)
 #define my_syscall1(n, a)               	syscall1(n, a)
@@ -53,7 +54,9 @@ extern int syscall6(int syscall_num, void *a, void *b, void *c, void *d, void *e
  *
  */
 __asm__ (
-	"_start:"
+	".section .text\n"
+	".globl _start\n"
+	"_start:\n"
 	"  xor  %ebp, %ebp\n" /* zero the stack frame                            */
 	"  mov  %rsp, %rdi\n" /* save stack pointer to %rdi, as arg1 of _start_c */
 	"  and  $-16, %rsp\n" /* %rsp must be 16-byte aligned before call        */
@@ -61,6 +64,6 @@ __asm__ (
 	"  hlt\n"             /* ensure it does not return                       */
 );
 
-extern void _start(long *sp);
+extern void _start(size_t *sp);
 
 #endif /* _NOLIBC_ARCH_X86_64_H */
